@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Mission - LunchBuddy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #FFF5F5 0%, #E6FFFA 100%);
+        }
+
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF6B6B;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .mission-container {
+            max-width: 1000px;
+            margin: 100px auto 50px;
+            padding: 2rem;
+        }
+
+        .mission-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #2D3748;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .problem-statement {
+            background: #FF6B6B11;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #FF6B6B;
+        }
+
+        .solution {
+            background: #4ECDC411;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #4ECDC4;
+        }
+
+        .section-header {
+            font-size: 1.5rem;
+            color: #2D3748;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            color: #2D3748;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .emphasized {
+            font-weight: 500;
+            color: #FF6B6B;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: #FF6B6B;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 2rem;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .mission-container {
+                padding: 1rem;
+            }
+
+            .mission-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="../landingpage.html" class="logo">
+                🍽️ LunchBuddy
+            </a>
+        </nav>
+    </header>
+
+    <div class="mission-container">
+        <h1 class="section-title">Our Mission</h1>
+        
+        <div class="mission-card">
+            <div class="problem-statement">
+                <h2 class="section-header">
+                    🎯 The Challenge We're Addressing
+                </h2>
+                <p>Junior Public Officers often struggle to connect with their Senior counterparts due to the lack of common topics of interest outside of work. This results in:</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <div class="feature-title">Social Bubbles</div>
+                        <p>Limited interaction between junior and senior officers</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <div class="feature-title">Communication Barriers</div>
+                        <p>Hesitation in approaching senior colleagues</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤝</div>
+                        <div class="feature-title">Limited Understanding</div>
+                        <p>Missed opportunities for mentorship and growth</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution">
+                <h2 class="section-header">
+                    💡 Our Solution: LunchBuddy
+                </h2>
+                <p>We're breaking down these barriers through a thoughtfully designed buddy system that facilitates meaningful connections over lunch. Here's how:</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📝</div>
+                        <div class="feature-title">Personalized Profiles</div>
+                        <p>Officers create profiles with their preferences, including:
+                        <br>• Nickname
+                        <br>• Favorite food
+                        <br>• Lunch style
+                        <br>• Role level
+                        <br>• Scope of work</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤝</div>
+                        <div class="feature-title">Smart Pairing</div>
+                        <p>Every Monday and Thursday:
+                        <br>• Junior-Senior pairs are created based on:
+                        <br>&nbsp;&nbsp;- Similar food preferences
+                        <br>&nbsp;&nbsp;- Complementary lunch styles
+                        <br>• Officers receive notifications</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <div class="feature-title">Convenient Meetups</div>
+                        <p>Upon mutual acceptance:
+                        <br>• Suggested lunch locations
+                        <br>• Equal distance from workplaces
+                        <br>• Email notifications with details</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✨</div>
+                        <div class="feature-title">Comfort First</div>
+                        <p>Prioritizing comfort with:
+                        <br>• Gender pairing preferences
+                        <br>• Opt-out options
+                        <br>• Flexible scheduling</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="impact">
+                <h2 class="section-header">
+                    🌟 Expected Impact
+                </h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🌉</div>
+                        <div class="feature-title">Bridged Gaps</div>
+                        <p>Breaking down barriers through casual interactions</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <div class="feature-title">Enhanced Communication</div>
+                        <p>Building confidence in cross-level interactions</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤗</div>
+                        <div class="feature-title">Stronger Culture</div>
+                        <p>Creating a more collaborative and inclusive workplace</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="../landingpage.html" class="back-button">Back to Home</a>
+        </div>
+    </div>
+
+</body>
+</html>

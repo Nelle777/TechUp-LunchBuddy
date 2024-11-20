@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="sandbox allow-same-origin allow-scripts">
     <title>My Profile - LunchBuddy</title>
     <style>
         * {
@@ -12,7 +13,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             color: #333;
             background: linear-gradient(135deg, #FFF5F5 0%, #E6FFFA 100%);
@@ -80,6 +81,9 @@
             color: #FF6B6B;
             font-size: 1.2rem;
             margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .info-group {
@@ -94,6 +98,9 @@
         .info-value {
             color: #2D3748;
             margin-top: 0.25rem;
+            padding: 0.5rem;
+            background: #f7fafc;
+            border-radius: 8px;
         }
 
         .preferences-grid {
@@ -113,17 +120,48 @@
         .edit-button {
             background-color: #4ECDC4;
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.5rem 1rem;
             border: none;
             border-radius: 50px;
-            font-size: 1rem;
-            font-weight: bold;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: transform 0.3s ease;
-            margin-top: 1rem;
         }
 
         .edit-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .field-input.active {
+            display: block;
+        }
+
+        .save-button {
+            background-color: #FF6B6B;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 2rem;
+            transition: transform 0.3s ease;
+            display: none;
+        }
+
+        .save-button:hover {
             transform: translateY(-2px);
         }
 
@@ -137,17 +175,6 @@
             }
         }
     </style>
-
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KQ11PSX85S"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-KQ11PSX85S');
-</script>
-
 </head>
 <body>
     <header class="header">
@@ -172,86 +199,290 @@
     </div>
 
     <script>
-        const userId = localStorage.getItem('userId');
-        console.log('UserId from localStorage:', userId);
-
+        function getStoredUserId() {
+            try {
+                return localStorage.getItem('userId');
+            } catch (error) {
+                console.error('LocalStorage access error:', error);
+                return null;
+            }
+        }
+    
+        const userId = getStoredUserId();
+        console.log('UserId from storage:', userId);
+    
         if (!userId) {
             window.location.href = 'login.html';
         }
+    
+        function formatLabel(key) {
+            const specialCases = {
+                'chinese': 'Chinese',
+                'malay': 'Malay',
+                'indian': 'Indian',
+                'western': 'Western',
+                'japanese': 'Japanese',
+                'korean': 'Korean',
+                'thai': 'Thai',
+                'vietnamese': 'Vietnamese',
+                'mediterranean': 'Mediterranean',
+                'halal': 'Halal',
+                'vegetarian': 'Vegetarian',
+                'vegan': 'Vegan',
+                'glutenFree': 'Gluten-free',
+                'dairyFree': 'Dairy-free'
+            };
+            return specialCases[key] || key;
+        }
 
         function populateProfile(userData) {
-            const content = document.getElementById('profileContent');
-            
-            content.innerHTML = `
-                <div class="profile-section">
-                    <h2 class="section-title">Basic Information</h2>
-                    <div class="info-group">
-                        <div class="info-label">Nickname</div>
-                        <div class="info-value">${userData.nickname}</div>
+    const content = document.getElementById('profileContent');
+    
+    content.innerHTML = `
+        <div class="profile-section" id="basic">
+            <div class="section-title">
+                <h2>Basic Information</h2>
+                <button class="edit-button" onclick="enableEdit('basic')">Edit</button>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Nickname</div>
+                <div class="info-value">${userData.nickname}</div>
+                <input type="text" class="field-input" value="${userData.nickname}" id="nickname-input">
+            </div>
+            <div class="info-group">
+                <div class="info-label">Email</div>
+                <div class="info-value">${userData.email}</div>
+                <input type="email" class="field-input" value="${userData.email}" id="email-input" disabled>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Role</div>
+                <div class="info-value">${userData.role === 'junior' ? 'Junior Officer' : 'Senior Officer'}</div>
+                <select class="field-input" id="role-input">
+                    <option value="junior" ${userData.role === 'junior' ? 'selected' : ''}>Junior Officer</option>
+                    <option value="senior" ${userData.role === 'senior' ? 'selected' : ''}>Senior Officer (Director-level and above)</option>
+                </select>
+            </div>
+            <button class="save-button" onclick="saveProfile('basic')">Save Changes</button>
+        </div>
+
+        <div class="profile-section" id="preferences">
+            <div class="section-title">
+                <h2>Food & Dining Preferences</h2>
+                <button class="edit-button" onclick="enableEdit('preferences')">Edit</button>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Favorite Cuisines</div>
+                <div class="preferences-grid">
+                    ${userData.foodPreferences.cuisineTypes.map(cuisine =>
+                       `<div class="preference-item">${formatLabel(cuisine)}</div>`
+                      ).join('')}
                     </div>
-                    <div class="info-group">
-                        <div class="info-label">Email</div>
-                        <div class="info-value">${userData.email}</div>
+                <div class="field-input preferences-grid">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="chinese" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('chinese') ? 'checked' : ''}>
+                        <label for="chinese">Chinese</label>
                     </div>
-                    <div class="info-group">
-                        <div class="info-label">Role</div>
-                        <div class="info-value">${userData.role === 'junior' ? 'Junior Officer' : 'Senior Officer'}</div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="malay" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('malay') ? 'checked' : ''}>
+                        <label for="malay">Malay</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="indian" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('indian') ? 'checked' : ''}>
+                        <label for="indian">Indian</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="western" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('western') ? 'checked' : ''}>
+                        <label for="western">Western</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="japanese" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('japanese') ? 'checked' : ''}>
+                        <label for="japanese">Japanese</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="korean" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('korean') ? 'checked' : ''}>
+                        <label for="korean">Korean</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="thai" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('thai') ? 'checked' : ''}>
+                        <label for="thai">Thai</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="vietnamese" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('vietnamese') ? 'checked' : ''}>
+                        <label for="vietnamese">Vietnamese</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="mediterranean" name="cuisine" ${userData.foodPreferences.cuisineTypes.includes('mediterranean') ? 'checked' : ''}>
+                        <label for="mediterranean">Mediterranean</label>
                     </div>
                 </div>
-
-                <div class="profile-section">
-                    <h2 class="section-title">Food & Dining Preferences</h2>
-                    <div class="info-group">
-                        <div class="info-label">Favorite Cuisines</div>
-                        <div class="preferences-grid">
-                            ${userData.foodPreferences.cuisineTypes.map(cuisine => 
-                                `<div class="preference-item">${cuisine}</div>`
-                            ).join('')}
-                        </div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Dietary Requirements</div>
+                <div class="preferences-grid">
+                    ${userData.foodPreferences.dietaryRequirements.map(req =>
+                        `<div class="preference-item">${formatLabel(req)}</div>`
+                      ).join('')}
                     </div>
-                    <div class="info-group">
-                        <div class="info-label">Dietary Requirements</div>
-                        <div class="preferences-grid">
-                            ${userData.foodPreferences.dietaryRequirements.map(req => 
-                                `<div class="preference-item">${req}</div>`
-                            ).join('')}
-                        </div>
+                <div class="field-input preferences-grid">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="halal" name="dietary" ${userData.foodPreferences.dietaryRequirements.includes('halal') ? 'checked' : ''}>
+                        <label for="halal">Halal</label>
                     </div>
-                    <div class="info-group">
-                        <div class="info-label">Lunch Style</div>
-                        <div class="info-value">${userData.foodPreferences.lunchStyle || 'Not specified'}</div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="vegetarian" name="dietary" ${userData.foodPreferences.dietaryRequirements.includes('vegetarian') ? 'checked' : ''}>
+                        <label for="vegetarian">Vegetarian</label>
                     </div>
-                </div>
-
-                <div class="profile-section">
-                    <h2 class="section-title">Location & Preferences</h2>
-                    <div class="info-group">
-                        <div class="info-label">Work Location</div>
-                        <div class="info-value">${userData.workLocation}</div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="vegan" name="dietary" ${userData.foodPreferences.dietaryRequirements.includes('vegan') ? 'checked' : ''}>
+                        <label for="vegan">Vegan</label>
                     </div>
-                    <div class="info-group">
-                        <div class="info-label">Gender Preference</div>
-                        <div class="info-value">${userData.genderPreference === 'any' ? 
-                            'Comfortable with any gender' : 
-                            'Prefer same gender'}</div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="glutenFree" name="dietary" ${userData.foodPreferences.dietaryRequirements.includes('glutenFree') ? 'checked' : ''}>
+                        <label for="glutenFree">Gluten-free</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="dairyFree" name="dietary" ${userData.foodPreferences.dietaryRequirements.includes('dairyFree') ? 'checked' : ''}>
+                        <label for="dairyFree">Dairy-free</label>
                     </div>
                 </div>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Lunch Style</div>
+                <div class="info-value">${userData.foodPreferences.lunchStyle || 'Not specified'}</div>
+                <select class="field-input" id="lunchStyle-input">
+                    <option value="quick" ${userData.foodPreferences.lunchStyle === 'quick' ? 'selected' : ''}>Quick and efficient</option>
+                    <option value="moderate" ${userData.foodPreferences.lunchStyle === 'moderate' ? 'selected' : ''}>Balanced pace</option>
+                    <option value="leisurely" ${userData.foodPreferences.lunchStyle === 'leisurely' ? 'selected' : ''}>Relaxed and chatty</option>
+                </select>
+            </div>
+            <button class="save-button" onclick="saveProfile('preferences')">Save Changes</button>
+        </div>
 
-                <button class="edit-button" onclick="editProfile()">Edit Profile</button>
-            `;
+        <div class="profile-section" id="location">
+            <div class="section-title">
+                <h2>Location & Preferences</h2>
+                <button class="edit-button" onclick="enableEdit('location')">Edit</button>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Work Location</div>
+                <div class="info-value">${userData.workLocation}</div>
+                <select class="field-input" id="location-input">
+                    <option value="cityhall" ${userData.workLocation === 'cityhall' ? 'selected' : ''}>City Hall</option>
+                    <option value="clarkeQuay" ${userData.workLocation === 'clarkeQuay' ? 'selected' : ''}>Clarke Quay</option>
+                    <option value="laboradorPark" ${userData.workLocation === 'laboradorPark' ? 'selected' : ''}>Labrador Park</option>
+                    <option value="oneNorth" ${userData.workLocation === 'oneNorth' ? 'selected' : ''}>One-north</option>
+                    <option value="tanjongPagar" ${userData.workLocation === 'tanjongPagar' ? 'selected' : ''}>Tanjong Pagar</option>
+                </select>
+            </div>
+            <div class="info-group">
+                <div class="info-label">Gender Preference</div>
+                <div class="info-value">${userData.genderPreference === 'any' ? 'Comfortable with any gender' : 'Prefer same gender'}</div>
+                <div class="field-input">
+                    <div class="radio-group">
+                        <input type="radio" id="anyGender" name="genderPreference" value="any" ${userData.genderPreference === 'any' ? 'checked' : ''}>
+                        <label for="anyGender">I'm comfortable with any gender</label>
+                    </div>
+                    <div class="radio-group">
+                        <input type="radio" id="sameGender" name="genderPreference" value="same" ${userData.genderPreference === 'same' ? 'checked' : ''}>
+                        <label for="sameGender">I'd feel more comfortable with my own gender</label>
+                    </div>
+                </div>
+            </div>
+            <button class="save-button" onclick="saveProfile('location')">Save Changes</button>
+        </div>
+    `;
+}
+    
+        function enableEdit(section) {
+            const inputs = document.querySelectorAll(`#${section} .field-input`);
+            const values = document.querySelectorAll(`#${section} .info-value`);
+            const saveButton = document.querySelector(`#${section} .save-button`);
+    
+            inputs.forEach(input => input.classList.add('active'));
+            values.forEach(value => value.style.display = 'none');
+            saveButton.style.display = 'block';
+        }
+    
+        async function saveProfile(section) {
+    try {
+        let updateData = {};
+        
+        if (section === 'basic') {
+            updateData = {
+                nickname: document.getElementById('nickname-input').value,
+                role: document.getElementById('role-input').value
+            };
+        }
+        else if (section === 'preferences') {
+            // Get selected cuisine types
+            const selectedCuisines = Array.from(document.querySelectorAll('input[name="cuisine"]:checked'))
+                .map(checkbox => checkbox.id);
+
+            // Get selected dietary requirements
+            const selectedDietary = Array.from(document.querySelectorAll('input[name="dietary"]:checked'))
+                .map(checkbox => checkbox.id);
+
+            updateData = {
+                foodPreferences: {
+                    cuisineTypes: selectedCuisines,
+                    dietaryRequirements: selectedDietary,
+                    lunchStyle: document.getElementById('lunchStyle-input').value
+                }
+            };
+        }
+        else if (section === 'location') {
+            updateData = {
+                workLocation: document.getElementById('location-input').value,
+                genderPreference: document.querySelector('input[name="genderPreference"]:checked').value
+            };
         }
 
-        function editProfile() {
-            // Add edit functionality here
-            alert('Edit profile feature coming soon!');
-        }
+        console.log('Updating profile with data:', updateData);
 
+        const response = await fetch(`http://localhost:3000/api/profile/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Profile updated successfully!');
+            await fetchUserProfile(); // Refresh the profile data
+        } else {
+            throw new Error(data.error || 'Failed to update profile');
+        }
+    } catch (error) {
+        console.error('Error saving profile:', error);
+        alert('Error saving profile. Please try again.');
+    }
+}
+
+function enableEdit(section) {
+    const sectionElement = document.getElementById(section);
+    const inputs = sectionElement.querySelectorAll('.field-input');
+    const values = sectionElement.querySelectorAll('.info-value');
+    const saveButton = sectionElement.querySelector('.save-button');
+
+    inputs.forEach(input => input.style.display = 'block');
+    values.forEach(value => value.style.display = 'none');
+    saveButton.style.display = 'block';
+}
+    
         async function fetchUserProfile() {
             try {
                 console.log('Fetching profile for userId:', userId);
-                const response = await fetch(`http://localhost:3000/api/profile/${userId}`);
+                const response = await fetch(`http://localhost:3000/api/profile/${userId}`, {
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
                 const userData = await response.json();
-                
+    
                 if (response.ok) {
                     console.log('Profile data received:', userData);
                     populateProfile(userData);
@@ -263,7 +494,8 @@
                 alert('Error loading profile. Please try again.');
             }
         }
-
+    
+        // Start by fetching and displaying the profile
         fetchUserProfile();
     </script>
 </body>

@@ -199,23 +199,27 @@
                 email: document.getElementById('email').value,
                 password: document.getElementById('password').value
             };
-
+    
             try {
                 const response = await fetch('http://localhost:3000/api/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'same-origin',
                     body: JSON.stringify(formData)
                 });
-
+    
                 const data = await response.json();
-
+    
                 if (response.ok) {
-                    // Store user data or token
-                    localStorage.setItem('userId', data.userId);
-                    // Redirect to profile page
-                    window.location.href = 'profile.html';
+                    try {
+                        localStorage.setItem('userId', data.userId);
+                        window.location.href = 'profile.html';
+                    } catch (storageError) {
+                        console.error('LocalStorage error:', storageError);
+                        alert('Error saving login data. Please check your browser settings.');
+                    }
                 } else {
                     const errorMessage = document.getElementById('error-message');
                     errorMessage.textContent = data.error || 'Invalid email or password';
@@ -224,10 +228,11 @@
             } catch (error) {
                 console.error('Login error:', error);
                 const errorMessage = document.getElementById('error-message');
-                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.textContent = 'Connection error. Please try again.';
                 errorMessage.classList.add('show');
             }
         });
     </script>
+    
 </body>
 </html>

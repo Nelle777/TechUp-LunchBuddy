@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <header class="header">
-        <nav class="nav">
-            <a href="../index.html" class="logo">
-                🍽️ LunchBuddy
-            </a>
-        </nav>
-    </header>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join LunchBuddy - Create Your Profile! 🍱</title>
@@ -117,23 +108,17 @@
             transition: border-color 0.3s ease;
         }
 
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
         .form-group input:focus,
         .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group input[type="password"]:focus {
             outline: none;
             border-color: #4ECDC4;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
         }
 
         .food-preferences {
@@ -141,6 +126,56 @@
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 1rem;
             margin-top: 0.5rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .preference-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .preference-title {
+            font-weight: 500;
+            color: #4A5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .radio-group:hover {
+            background-color: #fff;
+        }
+
+        .radio-group input[type="radio"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .radio-group label {
+            margin: 0;
+            font-weight: normal;
         }
 
         .submit-button {
@@ -177,11 +212,22 @@
             }
         }
     </style>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KQ11PSX85S"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KQ11PSX85S');
+</script>
+
 </head>
 <body>
     <header class="header">
         <nav class="nav">
-            <a href="/" class="logo">
+            <a href="../landingpage.html" class="logo">
                 🍽️ LunchBuddy
             </a>
         </nav>
@@ -203,8 +249,30 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Work Email <span class="required">*</span></label>
-                        <input type="email" id="email" required placeholder="your.name@work.gov.sg">
+                        <label for="email">Personal Email <span class="required">*</span></label>
+                        <input type="email" id="email" required placeholder="your.name@gmail.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password <span class="required">*</span></label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            required 
+                            placeholder="Create a password (minimum 8 characters)"
+                            minlength="8"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            required 
+                            placeholder="Confirm your password"
+                            minlength="8"
+                        >
                     </div>
 
                     <div class="form-group">
@@ -212,7 +280,7 @@
                         <select id="role" required>
                             <option value="">Select your role</option>
                             <option value="junior">Junior Officer</option>
-                            <option value="senior">Senior Officer</option>
+                            <option value="senior">Senior Officer (Director-level and above)</option>
                         </select>
                     </div>
 
@@ -256,12 +324,50 @@
                                 <input type="checkbox" id="korean" name="cuisine">
                                 <label for="korean">Korean</label>
                             </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="thai" name="cuisine">
+                                <label for="thai">Thai</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="vietnamese" name="cuisine">
+                                <label for="vietnamese">Vietnamese</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="mediterranean" name="cuisine">
+                                <label for="mediterranean">Mediterranean</label>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="allergies">Any Food Allergies?</label>
-                        <textarea id="allergies" placeholder="List any food allergies or dietary restrictions"></textarea>
+                        <label>Dietary Requirements</label>
+                        <div class="food-preferences">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="halal" name="dietary">
+                                <label for="halal">Halal</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="vegetarian" name="dietary">
+                                <label for="vegetarian">Vegetarian</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="vegan" name="dietary">
+                                <label for="vegan">Vegan</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="glutenFree" name="dietary">
+                                <label for="glutenFree">Gluten-free</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="dairyFree" name="dietary">
+                                <label for="dairyFree">Dairy-free</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="allergies">Any Other Dietary Restrictions/ Food Allergies?</label>
+                        <textarea id="allergies" placeholder="Tell us about any other dietary restrictions or food allergies not listed above"></textarea>
                     </div>
 
                     <div class="form-group">
@@ -278,18 +384,29 @@
                 <div class="form-section">
                     <h2>Preferences & Comfort</h2>
                     <div class="form-group">
-                        <label for="location">Work Location <span class="required">*</span></label>
-                        <input type="text" id="location" required placeholder="Your office location">
+                        <label for="location">Work Location (closest MRT) <span class="required">*</span></label>
+                        <select id="location" required>
+                            <option value="">Select nearest MRT station</option>
+                            <option value="cityhall">City Hall</option>
+                            <option value="clarkeQuay">Clarke Quay</option>
+                            <option value="laboradorPark">Labrador Park</option>
+                            <option value="oneNorth">One-north</option>
+                            <option value="tanjongPagar">Tanjong Pagar</option>
+                        </select>
                     </div>
 
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="genderPreference" checked>
-                        <label for="genderPreference">I'm comfortable being paired with colleagues of any gender</label>
-                    </div>
-
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="termsAccept" required>
-                        <label for="termsAccept">I accept the terms and conditions <span class="required">*</span></label>
+                    <div class="form-group">
+                        <p class="preference-title">Lunch Buddy Gender Preference</p>
+                        <div class="preference-options">
+                            <div class="radio-group">
+                                <input type="radio" id="anyGender" name="genderPreference" value="any">
+                                <label for="anyGender">I'm comfortable with any gender - Let's meet everyone! 😊</label>
+                            </div>
+                            <div class="radio-group">
+                                <input type="radio" id="sameGender" name="genderPreference" value="same">
+                                <label for="sameGender">I'd feel more comfortable with my own gender - That's totally okay! 💝</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -299,13 +416,56 @@
     </div>
 
     <script>
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Here you would typically collect all the form data and send it to your server
-            alert('Profile created! Ready to find your lunch buddy!');
-            // Redirect to dashboard or confirmation page
-            // window.location.href = '/dashboard';
-        });
+    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Get password values
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+        
+        const formData = {
+            nickname: document.getElementById('nickname').value,
+            email: document.getElementById('email').value,
+            password: password, // Add password to form data
+            role: document.getElementById('role').value,
+            gender: document.getElementById('gender').value,
+            foodPreferences: {
+                cuisineTypes: Array.from(document.querySelectorAll('input[name="cuisine"]:checked')).map(cb => cb.id),
+                dietaryRequirements: Array.from(document.querySelectorAll('input[name="dietary"]:checked')).map(cb => cb.id),
+                otherRestrictions: document.getElementById('allergies').value,
+                lunchStyle: document.getElementById('eatingStyle').value
+            },
+            workLocation: document.getElementById('location').value,
+            genderPreference: document.querySelector('input[name="genderPreference"]:checked').value
+        };
+
+        try {
+            const response = await fetch('http://localhost:3000/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert('Account created successfully! Please log in.');
+                window.location.href = 'login.html';
+            } else {
+                alert('Error creating profile: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error submitting form: ' + error.message);
+        }
+    });
     </script>
 </body>
 </html>

@@ -3,6 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://techup-lunchbuddy-backend.onrender.com https://www.googletagmanager.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline';">
+    <title>LunchBuddy - Your Pairing</title>
+  
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KQ11PSX85S"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+  
+      gtag('config', 'G-KQ11PSX85S');
+    </script>
   <title>LunchBuddy - Your Pairing</title>
   <style>
     * {
@@ -162,68 +177,93 @@
   </div>
 
   <script>
+    function getApiBaseUrl() {
+        return window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000'
+            : 'https://techup-lunchbuddy-backend.onrender.com';
+    }
+
     function getQueryParam(name) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(name);
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
     }
 
     const userId = getQueryParam('userId');
 
-    fetch(`/api/pairing/${userId}`)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Failed to fetch pairing data');
-        }
-      })
-      .then(data => {
-        if (!data.user1Id || !data.user2Id || !data.matchCriteria) {
-          throw new Error('Incomplete pairing data');
-        }
+    // Fetch pairing data
+    fetch(`${getApiBaseUrl()}/api/pairing/${userId}`)
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to fetch pairing data');
+            }
+        })
+        .then(data => {
+            if (!data.user1Id || !data.user2Id || !data.matchCriteria) {
+                throw new Error('Incomplete pairing data');
+            }
 
-        const pairingContainer = document.getElementById('pairing-container');
+            const pairingContainer = document.getElementById('pairing-container');
 
-        pairingContainer.innerHTML = `
-          <div class="flex items-center mb-4">
-            <img src="${data.user1Id.profilePicture}" alt="${data.user1Id.name}" class="w-16 h-16 rounded-full mr-4">
-            <div>
-              <h2 class="text-lg font-medium">${data.user1Id.name}</h2>
-              <p class="text-gray-600">Shared cuisine: ${data.matchCriteria.sharedCuisine}</p>
-              <p class="text-gray-600">Lunch style: ${data.matchCriteria.lunchStyle}</p>
-              <p class="profile-link" onclick="viewProfile('${data.user1Id._id}')">View Profile</p>
-            </div>
-          </div>
-          <div class="flex items-center">
-            <img src="${data.user2Id.profilePicture}" alt="${data.user2Id.name}" class="w-16 h-16 rounded-full mr-4">
-            <div>
-              <h2 class="text-lg font-medium">${data.user2Id.name}</h2>
-              <p class="text-gray-600">Shared cuisine: ${data.matchCriteria.sharedCuisine}</p>
-              <p class="text-gray-600">Lunch style: ${data.matchCriteria.lunchStyle}</p>
-              <p class="profile-link" onclick="viewProfile('${data.user2Id._id}')">View Profile</p>
-            </div>
-          </div>
-        `;
+            pairingContainer.innerHTML = `
+                <div class="flex items-center mb-4">
+                    <img src="${data.user1Id.profilePicture}" alt="${data.user1Id.name}" class="w-16 h-16 rounded-full mr-4">
+                    <div>
+                        <h2 class="text-lg font-medium">${data.user1Id.name}</h2>
+                        <p class="text-gray-600">Shared cuisine: ${data.matchCriteria.sharedCuisine}</p>
+                        <p class="text-gray-600">Lunch style: ${data.matchCriteria.lunchStyle}</p>
+                        <p class="profile-link" onclick="viewProfile('${data.user1Id._id}')">View Profile</p>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <img src="${data.user2Id.profilePicture}" alt="${data.user2Id.name}" class="w-16 h-16 rounded-full mr-4">
+                    <div>
+                        <h2 class="text-lg font-medium">${data.user2Id.name}</h2>
+                        <p class="text-gray-600">Shared cuisine: ${data.matchCriteria.sharedCuisine}</p>
+                        <p class="text-gray-600">Lunch style: ${data.matchCriteria.lunchStyle}</p>
+                        <p class="profile-link" onclick="viewProfile('${data.user2Id._id}')">View Profile</p>
+                    </div>
+                </div>
+            `;
 
-        document.getElementById('accept-btn').addEventListener('click', () => {
-          fetch(`/api/pairing/${data._id}/accept`, { method: 'POST' })
-            .then(response => response.json())
-            .then(() => alert('Pairing accepted!'))
-            .catch(error => alert('Error accepting pairing: ' + error.message));
-        });
+            // Add event listeners for accept/decline buttons
+            document.getElementById('accept-btn').addEventListener('click', () => {
+                fetch(`${getApiBaseUrl()}/api/pairing/${data._id}/accept`, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(() => {
+                        alert('Pairing accepted!');
+                        window.location.href = '/profile.html'; // Redirect to profile page
+                    })
+                    .catch(error => alert('Error accepting pairing: ' + error.message));
+            });
 
-        document.getElementById('decline-btn').addEventListener('click', () => {
-          fetch(`/api/pairing/${data._id}/decline`, { method: 'POST' })
-            .then(response => response.json())
-            .then(() => alert('Pairing declined.'))
-            .catch(error => alert('Error declining pairing: ' + error.message));
-        });
-      })
-      .catch(error => alert('Error fetching pairing data: ' + error.message));
+            document.getElementById('decline-btn').addEventListener('click', () => {
+                fetch(`${getApiBaseUrl()}/api/pairing/${data._id}/decline`, { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(() => {
+                        alert('Pairing declined.');
+                        window.location.href = '/profile.html'; // Redirect to profile page
+                    })
+                    .catch(error => alert('Error declining pairing: ' + error.message));
+            });
+        })
+        .catch(error => alert('Error fetching pairing data: ' + error.message));
 
     function viewProfile(userId) {
-      window.location.href = `profile.html?userId=${userId}`;
+        window.location.href = `/profile.html?userId=${userId}`;
     }
-  </script>
+</script>
+
 </body>
 </html>

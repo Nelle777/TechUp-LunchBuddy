@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://techup-lunchbuddy-backend.onrender.com https://www.googletagmanager.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline';">
     <title>Join LunchBuddy - Create Your Profile! 🍱</title>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KQ11PSX85S"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KQ11PSX85S');
+</script>
+
     <style>
         * {
             margin: 0;
@@ -212,18 +224,8 @@
             }
         }
     </style>
-
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KQ11PSX85S"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-KQ11PSX85S');
-</script>
-
 </head>
+
 <body>
     <header class="header">
         <nav class="nav">
@@ -431,56 +433,63 @@
     </div>
 
     <script>
-    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Get password values
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-
-        // Check if passwords match
-        if (password !== confirmPassword) {
-            alert('Passwords do not match!');
-            return;
+        function getApiBaseUrl() {
+            return window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000'
+                : 'https://techup-lunchbuddy-backend.onrender.com';
         }
+    
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get password values
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
         
-        const formData = {
-            nickname: document.getElementById('nickname').value,
-            email: document.getElementById('email').value,
-            password: password, // Add password to form data
-            role: document.getElementById('role').value,
-            gender: document.getElementById('gender').value,
-            foodPreferences: {
-                cuisineTypes: Array.from(document.querySelectorAll('input[name="cuisine"]:checked')).map(cb => cb.id),
-                dietaryRequirements: Array.from(document.querySelectorAll('input[name="dietary"]:checked')).map(cb => cb.id),
-                otherRestrictions: document.getElementById('allergies').value,
-                lunchStyle: document.getElementById('eatingStyle').value
-            },
-            workLocation: document.getElementById('location').value,
-            genderPreference: document.querySelector('input[name="genderPreference"]:checked').value
-        };
-
-        try {
-            const response = await fetch('http://localhost:3000/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert('Account created successfully! Please log in.');
-                window.location.href = 'login.html';
-            } else {
-                alert('Error creating profile: ' + data.error);
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
             }
-        } catch (error) {
-            alert('Error submitting form: ' + error.message);
-        }
-    });
+            
+            const formData = {
+                nickname: document.getElementById('nickname').value,
+                email: document.getElementById('email').value,
+                password: password,
+                role: document.getElementById('role').value,
+                gender: document.getElementById('gender').value,
+                foodPreferences: {
+                    cuisineTypes: Array.from(document.querySelectorAll('input[name="cuisine"]:checked')).map(cb => cb.id),
+                    dietaryRequirements: Array.from(document.querySelectorAll('input[name="dietary"]:checked')).map(cb => cb.id),
+                    otherRestrictions: document.getElementById('allergies').value,
+                    lunchStyle: document.getElementById('eatingStyle').value
+                },
+                workLocation: document.getElementById('location').value,
+                genderPreference: document.querySelector('input[name="genderPreference"]:checked').value
+            };
+        
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+        
+                const data = await response.json();
+        
+                if (response.ok) {
+                    alert('Account created successfully! Please log in.');
+                    window.location.href = '/login.html';  // Updated to use relative path
+                } else {
+                    alert('Error creating profile: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error submitting form: ' + error.message);
+            }
+        });
     </script>
+        
 </body>
 </html>

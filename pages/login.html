@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://techup-lunchbuddy-backend.onrender.com https://www.googletagmanager.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline';">
     <title>Login - LunchBuddy</title>
+
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KQ11PSX85S"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KQ11PSX85S');
+</script>
+
     <style>
         * {
             margin: 0;
@@ -192,6 +204,12 @@
     </div>
 
     <script>
+        function getApiBaseUrl() {
+            return window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000'
+                : 'https://techup-lunchbuddy-backend.onrender.com';
+        }
+    
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -201,12 +219,11 @@
             };
     
             try {
-                const response = await fetch('http://localhost:3000/api/login', {
+                const response = await fetch(`${getApiBaseUrl()}/api/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    credentials: 'same-origin',
                     body: JSON.stringify(formData)
                 });
     
@@ -215,7 +232,7 @@
                 if (response.ok) {
                     try {
                         localStorage.setItem('userId', data.userId);
-                        window.location.href = 'profile.html';
+                        window.location.href = '/profile.html';
                     } catch (storageError) {
                         console.error('LocalStorage error:', storageError);
                         alert('Error saving login data. Please check your browser settings.');
